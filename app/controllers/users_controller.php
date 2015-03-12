@@ -2,15 +2,14 @@
 
 class UsersController extends AppController {	
 	var $name = 'Users';
-	var $components = array(/*'Acl',*/ 'Auth', 'Session');
-    var $helpers = array('Html', 'Form', 'Session');	
+	var $uses = array('User');
 
-    function beforeFilter() {
-        //Configure AuthComponent
-        $this->Auth->authorize = 'actions';
-        $this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
-        $this->Auth->logoutRedirect = array('controller' => 'users', 'action' => 'logout');
-        $this->Auth->loginRedirect = array('controller' => 'posts', 'action' => 'add');
+	function index() {
+
+	}
+
+    function register(){
+    	
     }
 
 	function login(){
@@ -18,8 +17,23 @@ class UsersController extends AppController {
 
 	}
 
-	function logout(){
-	
+	function logout() {
+		$this->Session->delete('Usuario');
+		$this->redirect(array('controller' => 'Users', 'action' => 'ingresar'));
+
+	}
+
+	function ingresar(){
+		$this->layout = 'admin';
+		if ($this->data){
+			/*pr($this->data);*/
+			$usuario = $this->User->find('first', array('conditions' => array('User.username' => $this->data['user'], 'User.password' => $this->data['password'])));
+			/*pr($usuario);*/
+
+			if(!empty($usuario)){
+				$this->Session->write('Usuario', $usuario);
+			}	
+		}
 	}
 }
 ?>
